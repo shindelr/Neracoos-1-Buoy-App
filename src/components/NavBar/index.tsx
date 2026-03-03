@@ -39,16 +39,17 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 const NeracoosNavBar = () => {
   return (
     <div>
-      <Navbar bg="primary" data-bs-theme="dark" expand="md">
-        <Navbar.Brand href={paths.neracoos}>
-          <Image src={neracoosLogo} alt="NERACOOS" height={30} width={209} />
+      <Navbar bg="primary" data-bs-theme="dark" expand="md" className="mb-2 mb-md-5">
+        <Navbar.Brand href={paths.home} className="d-flex flex-column align-items-start flex-md-row align-items-md-center ms-5 ms-md-10 navbar-brand ">
+          <Image src={neracoosLogo} alt="NERACOOS" height={30} width={209} className="pe-3" />
+          <span className="align-middle pt-1">Mariner's Dashboard</span>
         </Navbar.Brand>
-        <Navbar.Toggle />
+
+        {/* No need for media breakpoint, doesn't appear till md anyways */}
+        <Navbar.Toggle className="me-3" />
 
         <Navbar.Collapse className="justify-content-end">
-          <Nav className="ml-auto">
-            <NavLink href={paths.home}>Home</NavLink>
-
+          <Nav className="me-5 me-md-10">
             <RegionDropdown closeParent={close} />
             <Nav.Item>
               <NavLink href={paths.waterLevel.root}>Water Level</NavLink>

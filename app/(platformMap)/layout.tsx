@@ -43,7 +43,7 @@ export default function Layout({
 
   return (
     <React.Fragment>
-      <Row className="align-items-stretch mx-3 mx-md-4">
+      <Row className="align-items-stretch mx-5 mx-md-10">
         {/* MAP & SUPERLATIVES */}
         <Col xs={12} md={6} className="ps-md-0">
           <ErddapMap {...(isPlatformView && { platformId })} />

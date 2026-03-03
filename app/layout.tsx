@@ -14,7 +14,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Providers>
-
           {/* Flex & fluid for responsiveness */}
           <div className="d-flex flex-column min-vh-100">
             <NavBar />
@@ -23,7 +22,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Container>
             <Footer />
           </div>
-
         </Providers>
       </body>
     </html>
