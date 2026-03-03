@@ -30,9 +30,9 @@ export default function Layout({
     setIsClient(true)
   }, [])
 
-  if (height < 420) {
-    height = 420
-  }
+  // if (height < 420) {
+  //   height = 420
+  // }
 
   //Removing warning in console re:Highcharts library defaultProps. Not an active warning for us--until this issues is solved on Highcharts' end, keep this to remove huge console error
   const error = console.error
@@ -43,15 +43,16 @@ export default function Layout({
 
   return (
     <React.Fragment>
-      <Row>
-        <Col xs={{ span: "12", order: "2" }} md={{ span: "6", order: "2" }}>
-          <div ref={ref} style={{ marginBottom: ".5rem" }}>
-            {sidebar}
-          </div>
+      <Row className="align-items-stretch mx-3 mx-md-4">
+        {/* MAP & SUPERLATIVES */}
+        <Col xs={12} md={6} className="ps-md-0">
+          <ErddapMap {...(isPlatformView && { platformId })} />
+          {/* <ErddapMap height={params.regionId ? "80vh" : height} {...(isPlatformView && { platformId })} /> */}
         </Col>
 
-        <Col xs={{ span: "12", order: `${isPlatformView ? "2" : "1"}` }} md={{ span: "6", order: "1" }}>
-          <ErddapMap height={params.regionId ? "80vh" : height} {...(isPlatformView && { platformId })} />
+        {/* WELCOME & GET STARTED */}
+        <Col xs={12} md={6} className="pe-md-0">
+          {sidebar}
           {belowMap ?? <React.Fragment>{belowMap}</React.Fragment>}
         </Col>
       </Row>
