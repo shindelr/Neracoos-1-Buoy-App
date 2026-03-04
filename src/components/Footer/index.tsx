@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row"
 const colSize = 10
 
 export const Footer: React.FunctionComponent = () => (
-  <footer className="caption py-6">
+  <footer className="caption py-6 mt-10">
     <Row>
       <Col md={colSize} className="mx-auto text-center">
         Copyright © 2026 - NERACOOS
