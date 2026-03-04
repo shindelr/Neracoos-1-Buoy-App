@@ -30,9 +30,10 @@ export default function Layout({
     setIsClient(true)
   }, [])
 
-  if (height < 420) {
-    height = 420
-  }
+  // // Quick update for landing page, but this will need dynamicism(sp?)
+  // if (height < 520) {
+  //   height = 520
+  // }
 
   //Removing warning in console re:Highcharts library defaultProps. Not an active warning for us--until this issues is solved on Highcharts' end, keep this to remove huge console error
   const error = console.error
@@ -43,15 +44,15 @@ export default function Layout({
 
   return (
     <React.Fragment>
-      <Row>
-        <Col xs={{ span: "12", order: "2" }} md={{ span: "6", order: "2" }}>
-          <div ref={ref} style={{ marginBottom: ".5rem" }}>
-            {sidebar}
-          </div>
+      <Row className="align-items-stretch mx-5 mx-md-10">
+        <Col xs={12} md={6} className="ps-0 pe-0 pe-md-5">
+          <ErddapMap
+            // height={params.regionId ? "80vh" : height}
+            {...(isPlatformView && { platformId })}
+          />
         </Col>
-
-        <Col xs={{ span: "12", order: `${isPlatformView ? "2" : "1"}` }} md={{ span: "6", order: "1" }}>
-          <ErddapMap height={params.regionId ? "80vh" : height} {...(isPlatformView && { platformId })} />
+        <Col xs={12} md={6} className="ps-0 pe-0 ps-md-5 mt-5 mt-md-0">
+          {sidebar}
           {belowMap ?? <React.Fragment>{belowMap}</React.Fragment>}
         </Col>
       </Row>

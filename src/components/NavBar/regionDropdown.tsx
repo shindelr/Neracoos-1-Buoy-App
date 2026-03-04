@@ -19,12 +19,14 @@ export const NavLink = ({
 }) => {
   const pathname = usePathname()
 
-  const isActive = pathname.startsWith(href)
+  // Necessary?
+  // const isActive = pathname.startsWith(href)
 
   return (
     <Link
       href={href}
-      className={isActive ? "nav-link dropdown-item btn" : "nav-link dropdown-item btn"}
+      className="dropdown-item"
+      // className={isActive ? "nav-link dropdown-item btn" : "nav-link dropdown-item btn"} // classes stripped from scss
       onClick={onClick}
     >
       {children}
@@ -63,7 +65,7 @@ export class RegionDropdown extends React.Component<Props, State> {
     })
 
     return (
-      <NavDropdown title="Regions" id="region-dropdown">
+      <NavDropdown title="Station List" id="region-dropdown">
         {regions}
       </NavDropdown>
     )

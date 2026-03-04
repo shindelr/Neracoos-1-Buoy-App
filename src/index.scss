@@ -1,96 +1,175 @@
 @import "../node_modules/bootstrap/scss/functions";
 
-$old-neracoos-blue: #114a6e;
+// NERACOOS COLORS
+$blue: rgba(8, 61, 82, 1);                      // #083d52
+$black: rgba(33, 37, 41, 1);                    // #212529
+$white: rgba(255, 255, 255, 1);                 // #FFFFFF
+$orange: rgba(255, 174, 109, 1);                // #FFAE6D
+$green: rgba(42, 183, 143, 1);                  // #2AB78F
+$seaweed: rgba(23, 133, 150, 1);                // #178596
+$yellow: rgba(255, 205, 34, 1);                 // #FFCD22
+$bootstrap-red: rgba(220, 53, 69, 1);           // #DC3545
 
-$neracoos-blue: #083d52;
-$metallic-seaweed: #178596;
-$coastal-meadow: #2ab78f;
-$buoy-yellow: #ffcb22;
-$what-orange: #ffae6d;
-$color: #72e400;
+// THEME
+$primary: $blue;
+$secondary: $black;
+$info: $seaweed;
+$success: $green;
+$warning: $yellow;
+$danger: $bootstrap-red;
 
-$primary: $neracoos-blue;
-// $primary: $old-neracoos-blue;
-
-$secondary: $metallic-seaweed;
-$success: $coastal-meadow;
-$warning: $buoy-yellow;
-$danger: $what-orange;
-$info: $metallic-seaweed;
+$theme-colors: (
+  "orange": $orange,
+  "white": $white,
+  "primary": $primary,
+  "secondary": $secondary,
+  "info": $info, 
+  "success": $success,
+  "warning": $warning,
+  "danger": $danger
+);
+$font-family-base: Helvetica, Arial, sans-serif;
+$grid-gutter-width: 1.25rem;
+$spacers: (
+  0: 0,
+  1: 0.25rem,
+  2: 0.50rem,
+  3: 0.75rem,
+  4: 1.00rem,
+  5: 1.25rem,     // 20px
+  6: 1.50rem,
+  7: 1.75rem,
+  8: 2.00rem,
+  9: 2.25rem,
+  10: 2.50rem     // 40px
+);
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
-// @import "~bootstrap/scss/variables";
-// @import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
 
-// @import "~bootstrap/scss/reboot";
-// @import "~bootstrap/scss/root";
-// @import "~bootstrap/scss/type";
-// @import "~bootstrap/scss/images";
-// @import "~bootstrap/scss/containers";
-// @import "~bootstrap/scss/grid";
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+// ========== TYPOGRAPHY START ========== 
+h1, h2, h3 {
+  line-height: 1.875rem;
 }
 
-.App .alert-primary {
+h1 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  @include media-breakpoint-up(sm) {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 1.25rem;
+  @include media-breakpoint-up(sm) {
+    font-size: 1.5rem;
+  }
+}
+
+h3 {
+  font-weight: 400;
+  font-size: 1.25rem;
+}
+
+p {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+// Call this paragraph bold and caption bold
+strong {
+  font-weight: 700;
+}
+
+// Custom class for the caption font
+.caption {
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+a {
+font-weight: 400;
+font-size: 1rem;
+line-height: 1.5rem;
+text-decoration-line: underline;
+color: $primary;
+}
+// ========== TYPOGRAPHY END ========== 
+
+// =========== NAVBAR START =========== 
+.navbar .navbar-brand {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;  
+  color: $white;
+}
+
+.navbar .nav-link {
+  color: $white;
+  opacity: 0.55;
+}
+
+.navbar .nav-link:hover {
+  opacity: 1.00;
+}
+
+.dropdown-menu {
+  background-color: $white;
+  border-width: 1px;
+  border-color: $primary;
+}
+
+.navbar .dropdown-menu .dropdown-item {
   color: $primary;
+  opacity: 0.55;
 }
-
-.App .navbar-brand .nav-link,
-.App .nav-tabs .nav-item {
-  color: $primary;
+.navbar .dropdown-menu .dropdown-item:hover {
+  opacity: 1.00;
+  color: $white;
 }
+// =========== NAVBAR END =========== 
 
-nav.navbar {
-  background-color: $primary;
-  margin-bottom: 1rem;
+// ======= PLATFORM MAP START ======= 
+.platform-map {
+    min-height: 40vh;
 
-  .dropdown-menu {
-    background-color: white;
-  }
-  .navbar-brand > img {
-    height: 30px;
-  }
-
-  a.nav-link {
-    color: rgba(255, 255, 255, 0.55);
-
-    &.active {
-      color: white;
-    }
-
-    &.dropdown-item {
-      color: $primary;
-    }
-
-    &.dropdown-toggle.show {
-      color: rgba(255, 255, 255, 0.739);
-    }
-  }
+  @include media-breakpoint-up(md){
+    min-height: 520px;
+  }  
 }
+// ======= PLATFORM MAP END ======= 
 
-.navbar-dark .navbar-nav .dropdown-menu .nav-link:hover {
-  color: black;
+.superlative-header, footer {
+  background-color: rgba($secondary, 0.05);
 }
 
 .condition-tooltip > div > div {
-  background-color: $primary;
+  background-color: $blue;
 }
 
 .condition-tooltip > div.tooltip > span.arrow::before {
-  border-top-color: $primary;
-  border-bottom-color: $primary;
+  border-top-color: $blue;
+  border-bottom-color: $blue;
 }
 
-.btn-primary {
-  @include button-variant($primary, $primary, $active-background: $primary);
+.btn-blue {
+  @include button-variant($blue, $blue, $active-background: $blue);
 }
 
 .tooltip-inner a {
-  color: $coastal-meadow;
+  color: $green;
 }
 
 .map .ol-zoom {
