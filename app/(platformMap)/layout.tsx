@@ -45,16 +45,13 @@ export default function Layout({
   return (
     <React.Fragment>
       <Row className="align-items-stretch mx-5 mx-md-10">
-        {/* MAP & SUPERLATIVES */}
-        <Col xs={12} md={6} className="ps-md-0">
+        <Col xs={12} md={6} className="ps-0 pe-0 pe-md-5">
           <ErddapMap
             // height={params.regionId ? "80vh" : height}
             {...(isPlatformView && { platformId })}
           />
         </Col>
-
-        {/* WELCOME & GET STARTED */}
-        <Col xs={12} md={6} className="pe-md-0">
+        <Col xs={12} md={6} className="ps-0 pe-0 ps-md-5 mt-5 mt-md-0">
           {sidebar}
           {belowMap ?? <React.Fragment>{belowMap}</React.Fragment>}
         </Col>

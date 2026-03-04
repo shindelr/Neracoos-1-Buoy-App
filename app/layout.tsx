@@ -20,8 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Container fluid className="flex-fill p-0">
               {children}
             </Container>
-            <Footer />
           </div>
+          <Footer />
         </Providers>
       </body>
     </html>
