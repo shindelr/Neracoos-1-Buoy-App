@@ -42,7 +42,7 @@ export default function Layout({
         <Col xs={12} md={6} className="order-2 d-flex">
           <div className="platform-map-layout flex-fill">
             {/* Second div layer decouples sidebar from map to allow for scrolling */}
-            <div className={isRegionView ? "sidebar-height" : ""}>{sidebar}</div>
+            <div className={isRegionView ? "sidebar-height" : "d-flex flex-column flex-fill"}>{sidebar}</div>
           </div>
         </Col>
 
@@ -55,8 +55,6 @@ export default function Layout({
             />
           </div>
 
-          {/* Below Map = Superlatives */}
-          {belowMap ?? <React.Fragment>{belowMap}</React.Fragment>}
         </Col>
       </Row>
 
