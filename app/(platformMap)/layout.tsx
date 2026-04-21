@@ -39,14 +39,16 @@ export default function Layout({
   return (
     <React.Fragment>
       <Row className="g-5 align-items-stretch">
-        <Col xs={12} md={6} className="order-2 d-flex">
+        <Col xs={12} md={6} className="order-1 order-md-2 d-flex flex-column">
           <div className="platform-map-layout flex-fill">
             {/* Second div layer decouples sidebar from map to allow for scrolling */}
-            <div className={isRegionView ? "sidebar-height" : "d-flex flex-column flex-fill"}>{sidebar}</div>
+            <div className={isRegionView ? "sidebar-height" : "d-flex flex-column flex-fill justify-content-between"}>
+              {sidebar}
+            </div>
           </div>
         </Col>
 
-        <Col xs={12} md={6} className="order-1 d-flex flex-column">
+        <Col xs={12} md={6} className="order-2 order-md-1 d-flex flex-column">
           <div className="platform-map-layout flex-fill">
             <ErddapMap
               // Pass minimum height requirement only on landing page
@@ -54,7 +56,6 @@ export default function Layout({
               {...(isPlatformView && { platformId })}
             />
           </div>
-
         </Col>
       </Row>
 
