@@ -2,8 +2,7 @@
  * Current observations table component
  */
 import React from "react"
-import ListGroup from "react-bootstrap/ListGroup"
-
+import { Row } from "react-bootstrap"
 import { UnitSystem } from "Features/Units/types"
 
 import { UsePlatformRenderProps } from "../../../hooks/BuoyBarnComponents"
@@ -35,9 +34,9 @@ export const ErddapObservationTable: React.FC<Props> = ({
   times.sort((a, b) => a.valueOf() - b.valueOf())
 
   return (
-    <ListGroup className="pt-4" as="ul">
+    <div>
       {times.length > 0 ? (
-        <ListGroup.Item style={itemStyle} as="li">
+        <>
           <b>Last updated at:</b>{" "}
           {times[times.length - 1].toLocaleString(undefined, {
             hour: "2-digit",
@@ -46,20 +45,22 @@ export const ErddapObservationTable: React.FC<Props> = ({
             month: "short",
             day: "numeric",
           })}
-        </ListGroup.Item>
+        </>
       ) : (
-        <ListGroup.Item style={itemStyle}>There is no recent data from {platformName(platform)}</ListGroup.Item>
+        <>There is no recent data from {platformName(platform)}</>
       )}
-      {allCurrentConditionsTimeseries.map((timeSeries, index) => {
-        return <TableItem key={index} timeSeries={timeSeries} platform={platform} unitSystem={unitSystem} />
-      })}
+      <Row xs={1} md={3}>
+        {allCurrentConditionsTimeseries.map((timeSeries, index) => {
+          return <TableItem key={index} timeSeries={timeSeries} platform={platform} unitSystem={unitSystem} />
+        })}
+      </Row>
 
       {unitSelector ? (
-        <ListGroup.Item style={{ padding: ".5rem", paddingLeft: "1rem", color: "black" }} as="li">
+        <>
           <b>Unit system:</b> {unitSelector}
-        </ListGroup.Item>
+        </>
       ) : null}
-      {children && <ListGroup.Item>{children}</ListGroup.Item>}
-    </ListGroup>
+      {children && <>{children}</>}
+    </div>
   )
 }

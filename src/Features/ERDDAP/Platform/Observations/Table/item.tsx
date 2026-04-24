@@ -7,12 +7,14 @@ import Link from "next/link"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 import Tooltip from "react-bootstrap/Tooltip"
 import * as Sentry from "@sentry/react"
+import { Card } from "react-bootstrap"
 
 import { paths } from "Shared/constants"
 import { round } from "Shared/math"
 import { urlPartReplacer } from "Shared/urlParams"
 import { UnitSystem } from "Features/Units/types"
 import { converter } from "Features/Units/Converter"
+import { LineChartIcon } from "Shared/icons/iconsMap"
 
 import { PlatformFeature, PlatformTimeSeries } from "../../../types"
 
@@ -40,10 +42,17 @@ const TableItemDisplay: React.FC<TableItemDisplayProps> = ({
   const value = unit_converter.convertTo(timeSeries.value as number, unitSystem)
 
   return (
-    <span ref={ref}>
-      <b>{name}:</b> {typeof value === "number" ? round(value as number, 1) : value}{" "}
-      {unit_converter.displayName(unitSystem)}
-    </span>
+    <Card className="h-100">
+      <Card.Header>
+        <strong>{name}</strong>
+      </Card.Header>
+
+      <Card.Body className="d-flex flex-column">
+        <span>{typeof value === "number" ? round(value as number, 1) : value}</span>
+        <span>{unit_converter.displayName(unitSystem)}</span>
+        <LineChartIcon className="fa-sm" />
+      </Card.Body>
+    </Card>
   )
 }
 
@@ -77,11 +86,11 @@ export const TableItem = ({ timeSeries, unitSystem, platform }: TableItemProps) 
       className="list-group-item"
     >
       <OverlayTrigger overlay={renderToolTip} delay={{ show: 250, hide: 400 }}>
-        <span>
+        <div>
           <Sentry.ErrorBoundary fallback={<b>Error displaying {timeSeries.data_type.long_name}</b>} showDialog={false}>
             <TableItemDisplay name={name} unitSystem={unitSystem} timeSeries={timeSeries} />
           </Sentry.ErrorBoundary>
-        </span>
+        </div>
       </OverlayTrigger>
     </Link>
   )
