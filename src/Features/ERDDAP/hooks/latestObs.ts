@@ -11,17 +11,23 @@ type CardDispData = {
   direction: string | number | null
 }
 
-export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs: PlatformTimeSeries[]) => {
-  const getValue = (ts: PlatformTimeSeries) => {
-    const unit_converter = converter(ts.data_type.standard_name)
-    const value = unit_converter.convertTo(ts.value as number, unitSystem)
-    return typeof value === "number" ? round(value as number, 1) : value
-  }
+const getValOrUnit = (unitSystem: UnitSystem) => {
+    const getValue = (ts: PlatformTimeSeries) => {
+      const unit_converter = converter(ts.data_type.standard_name)
+      const value = unit_converter.convertTo(ts.value as number, unitSystem)
+      return typeof value === "number" ? round(value as number, 1) : value
+    }
+    
+    const getUnit = (ts: PlatformTimeSeries) => {
+      const unit_converter = converter(ts.data_type.standard_name)
+      return unit_converter.displayName(unitSystem)
+    }
 
-  const getUnit = (ts: PlatformTimeSeries) => {
-    const unit_converter = converter(ts.data_type.standard_name)
-    return unit_converter.displayName(unitSystem)
-  }
+    return {getValue, getUnit}
+}
+
+export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs: PlatformTimeSeries[]) => {
+  const {getValue, getUnit} = getValOrUnit(unitSystem)
 
   const getVar = (variable: string) => {
     if (groupTs) {
@@ -60,17 +66,10 @@ export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs:
   return { getWindOrWaveData }
 }
 
-export const getNonGroupData = (unitSystem: UnitSystem, ts: PlatformTimeSeries) => {
-  const getValue = (ts: PlatformTimeSeries) => {
-    const unit_converter = converter(ts.data_type.standard_name)
-    const value = unit_converter.convertTo(ts.value as number, unitSystem)
-    return typeof value === "number" ? round(value as number, 1) : value
-  }
 
-  const getUnit = (ts: PlatformTimeSeries) => {
-    const unit_converter = converter(ts.data_type.standard_name)
-    return unit_converter.displayName(unitSystem)
-  }
+// Return simple data which does not require grouping, such as Air Temperature.
+export const getNonGroupData = (unitSystem: UnitSystem, ts: PlatformTimeSeries) => {
+  const {getValue, getUnit} = getValOrUnit(unitSystem)
 
   const getOtherData = (): CardDispData => {
     return {
@@ -85,6 +84,8 @@ export const getNonGroupData = (unitSystem: UnitSystem, ts: PlatformTimeSeries) 
   return { getOtherData }
 }
 
+
+// Find desired variable groups and return an array of platform timeseries.
 export const getLatestObsGroups = (allTs: PlatformTimeSeries[]) => {
   const groups = {
     Waves: new Set(["WVHT", "DPD", "MWD"]),
