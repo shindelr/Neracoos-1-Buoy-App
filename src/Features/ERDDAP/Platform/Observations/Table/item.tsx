@@ -7,91 +7,96 @@ import Link from "next/link"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 import Tooltip from "react-bootstrap/Tooltip"
 import * as Sentry from "@sentry/react"
-import { Card } from "react-bootstrap"
+import { Card, Col } from "react-bootstrap"
 
 import { paths } from "Shared/constants"
-import { round } from "Shared/math"
 import { urlPartReplacer } from "Shared/urlParams"
 import { UnitSystem } from "Features/Units/types"
-import { converter } from "Features/Units/Converter"
-import { LineChartIcon } from "Shared/icons/iconsMap"
+import { LineChartIcon, LocationArrowIcon } from "Shared/icons/iconsMap"
 
 import { PlatformFeature, PlatformTimeSeries } from "../../../types"
-
-export const itemStyle = { padding: ".5rem", paddingLeft: "1rem", color: "black" }
+import { getGroupData, getNonGroupData } from "Features/ERDDAP/hooks/latestObs"
 
 interface TableItemProps {
   platform: PlatformFeature
-  timeSeries: PlatformTimeSeries
+  timeSeries: PlatformTimeSeries | PlatformTimeSeries[]
   unitSystem: UnitSystem
 }
 
-type TableItemDisplayProps = Pick<TableItemProps, "timeSeries" | "unitSystem"> &
+type TableItemDisplayProps = Pick<TableItemProps, "unitSystem"> &
   React.HTMLProps<HTMLSpanElement> & {
-    name: string
+    groupName: string
+    timeSeries: PlatformTimeSeries | PlatformTimeSeries[]
   }
 
 const TableItemDisplay: React.FC<TableItemDisplayProps> = ({
-  ref,
-  name,
+  groupName,
   unitSystem,
   timeSeries,
 }: TableItemDisplayProps) => {
-  const unit_converter = converter(timeSeries.data_type.standard_name)
+  const cardData = Array.isArray(timeSeries)
+    ? getGroupData(unitSystem, groupName, timeSeries).getWindOrWaveData()
+    : getNonGroupData(unitSystem, timeSeries).getOtherData()
 
-  const value = unit_converter.convertTo(timeSeries.value as number, unitSystem)
+  if (!cardData) {
+    return null
+  }
 
   return (
-    <Card className="h-100">
-      <Card.Header>
-        <strong>{name}</strong>
-      </Card.Header>
-
+    <Card className="flex-fill w-100">
       <Card.Body className="d-flex flex-column">
-        <span>{typeof value === "number" ? round(value as number, 1) : value}</span>
-        <span>{unit_converter.displayName(unitSystem)}</span>
-        <LineChartIcon className="fa-sm" />
+        {/* Bucket name */}
+        <p className="text-black-65 mb-0">{groupName}</p>
+
+        {/* Primary value and unit */}
+        <span className="d-flex flex-row align-items-end">
+          <h1 className="mb-0">{cardData?.primary}</h1>
+          <p className="text-black-65 ms-1 m-0">{cardData?.primaryUnit}</p>
+        </span>
+
+        {/* Secondary info -- gust/period */}
+        <span>
+          {cardData?.secondary} {cardData?.secondaryUnit}
+        </span>
+
+        {/* Direction */}
+        {cardData?.direction && (
+          <span className="d-flex flex-row align-items-center">
+            <p className="mb-0">{cardData?.direction}</p>
+            <LocationArrowIcon className="fa-sm ms-1" />
+          </span>
+        )}
+        <LineChartIcon className="fa-sm mt-auto ms-auto" />
       </Card.Body>
     </Card>
   )
 }
 
 export const TableItem = ({ timeSeries, unitSystem, platform }: TableItemProps) => {
-  const tooltipId = `${timeSeries.data_type.standard_name}-tooltip`
-
-  let name = timeSeries.data_type.long_name
-  if (timeSeries.depth && timeSeries.depth > 0) {
-    name = `${name} @ ${timeSeries.depth}m`
-  }
-
-  const renderToolTip = (props) => {
-    if (timeSeries.time) {
-      return (
-        <Tooltip {...props} id={tooltipId}>
-          {new Date(timeSeries.time).toLocaleString()}
-        </Tooltip>
-      )
-    }
-    return null
-  }
+  const isGrouped = Array.isArray(timeSeries)
+  const firstTs = isGrouped ? timeSeries[0] : timeSeries
+  const groupName = isGrouped
+    ? firstTs.data_type.long_name.match("Wave")
+      ? "Waves"
+      : "Wind"
+    : firstTs.data_type.long_name
 
   return (
-    <Link
-      href={urlPartReplacer(
-        urlPartReplacer(paths.platforms.observations, ":id", platform.id as string),
-        ":type",
-        timeSeries.data_type.standard_name,
-      )}
-      style={itemStyle}
-      className="list-group-item"
-    >
-      <OverlayTrigger overlay={renderToolTip} delay={{ show: 250, hide: 400 }}>
-        <div>
-          <Sentry.ErrorBoundary fallback={<b>Error displaying {timeSeries.data_type.long_name}</b>} showDialog={false}>
-            <TableItemDisplay name={name} unitSystem={unitSystem} timeSeries={timeSeries} />
+    <Col className="d-flex g-1">
+      <Link
+        href={urlPartReplacer(
+          urlPartReplacer(paths.platforms.observations, ":id", platform.id as string),
+          ":type",
+          firstTs.data_type.standard_name,
+        )}
+        className="d-flex flex-fill text-decoration-none"
+      >
+        <div className="d-flex flex-fill">
+          <Sentry.ErrorBoundary fallback={<b>Error displaying {firstTs.data_type.long_name}</b>} showDialog={false}>
+            <TableItemDisplay groupName={groupName} unitSystem={unitSystem} timeSeries={timeSeries} />
           </Sentry.ErrorBoundary>
         </div>
-      </OverlayTrigger>
-    </Link>
+      </Link>
+    </Col>
   )
 }

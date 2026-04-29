@@ -20,7 +20,7 @@ export function CurrentConditions({ platformId }: { platformId: string }) {
             <Col xs={12} md={8}>
               <ErddapCurrentPlatformConditions platform={platform} />
             </Col>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={4} className="d-flex flex-column flex-fill bg-black bg-opacity-5 rounded-3">
               <ErddapObservationTable
                 platform={platform}
                 unitSelector={<UnitSelector />}
