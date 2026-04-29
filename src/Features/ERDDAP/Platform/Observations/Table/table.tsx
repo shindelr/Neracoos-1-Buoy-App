@@ -8,7 +8,7 @@ import { UnitSystem } from "Features/Units/types"
 import { UsePlatformRenderProps } from "../../../hooks/BuoyBarnComponents"
 import { currentConditionsTimeseries } from "../../../utils/currentConditionsTimeseries"
 
-import { TableItem } from "./item"
+import { TableItemDisplay } from "./item"
 import { platformName } from "Features/ERDDAP/utils/platformName"
 import { getLatestObsGroups } from "Features/ERDDAP/hooks/latestObs"
 
@@ -33,7 +33,7 @@ export const ErddapObservationTable: React.FC<Props> = ({
   const { allCurrentConditionsTimeseries } = currentConditionsTimeseries(platform, laterThan)
   const times = allCurrentConditionsTimeseries.filter((d) => d.time !== null).map((d) => new Date(d.time as string))
   times.sort((a, b) => a.valueOf() - b.valueOf())
-
+  console.log(allCurrentConditionsTimeseries)
   const { waveTs, windTs, otherTs } = getLatestObsGroups(allCurrentConditionsTimeseries)
 
   return (
@@ -56,10 +56,10 @@ export const ErddapObservationTable: React.FC<Props> = ({
         <div>There is no recent data from {platformName(platform)}</div>
       )}
       <Row xs={1} md={2} className="d-flex align-items-stretch">
-        {waveTs.length > 0 && <TableItem timeSeries={waveTs} platform={platform} unitSystem={unitSystem} />}
-        {windTs.length > 0 && <TableItem timeSeries={windTs} platform={platform} unitSystem={unitSystem} />}
+        {waveTs.length > 0 && <TableItemDisplay timeSeries={waveTs} platform={platform} unitSystem={unitSystem} />}
+        {windTs.length > 0 && <TableItemDisplay timeSeries={windTs} platform={platform} unitSystem={unitSystem} />}
         {otherTs.map((ts, index) => {
-          return <TableItem key={index} timeSeries={ts} platform={platform} unitSystem={unitSystem} />
+          return <TableItemDisplay key={index} timeSeries={ts} platform={platform} unitSystem={unitSystem} />
         })}
       </Row>
 
