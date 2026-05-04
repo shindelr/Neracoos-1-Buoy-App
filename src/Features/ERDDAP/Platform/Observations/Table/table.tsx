@@ -2,7 +2,7 @@
  * Current observations table component
  */
 import React from "react"
-import { Row, Tab } from "react-bootstrap"
+import { Row, Col } from "react-bootstrap"
 import { UnitSystem } from "Features/Units/types"
 
 import { UsePlatformRenderProps } from "../../../hooks/BuoyBarnComponents"
@@ -55,7 +55,7 @@ export const ErddapObservationTable: React.FC<Props> = ({
       ) : (
         <div>There is no recent data from {platformName(platform)}</div>
       )}
-      <Row xs={1} md={2} className="d-flex align-items-stretch">
+      <Row xs={1} lg={2} className="align-items-stretch">
         {waveTs.length > 0 && <TableItemDisplay timeSeries={waveTs} platform={platform} unitSystem={unitSystem} />}
         {windTs.length > 0 && <TableItemDisplay timeSeries={windTs} platform={platform} unitSystem={unitSystem} />}
         {otherTs.map((ts, index) => {
@@ -64,9 +64,14 @@ export const ErddapObservationTable: React.FC<Props> = ({
       </Row>
 
       {unitSelector ? (
-        <div>
-          <b>Unit system:</b> {unitSelector}
-        </div>
+        <Row className="d-flex flex-row mt-4 w-100 align-items-center">
+          <Col className="order-1" xs={12} lg={4}>
+            <span className="d-flex justify-content-center text-black-65">Unit system</span>
+          </Col>
+          <Col className="order-2" xs={12} lg={8}>
+            {unitSelector}
+          </Col>
+        </Row>
       ) : null}
       {children && <>{children}</>}
     </>

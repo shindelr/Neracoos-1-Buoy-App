@@ -16,11 +16,11 @@ export function CurrentConditions({ platformId }: { platformId: string }) {
     <UsePlatform platformId={platformId}>
       {({ platform }: { platform: PlatformFeature }) => {
         return (
-          <Row>
-            <Col xs={12} md={8}>
+          <Row className="align-items-start">
+            <Col xs={12} md={9} className="mb-4">
               <ErddapCurrentPlatformConditions platform={platform} />
             </Col>
-            <Col xs={12} md={4} className="d-flex flex-column flex-fill bg-black bg-opacity-5 rounded-3">
+            <Col xs={12} md={3} className="d-flex flex-column mb-4 p-4 bg-black bg-opacity-5 rounded-3">
               <ErddapObservationTable
                 platform={platform}
                 unitSelector={<UnitSelector />}

@@ -1,7 +1,4 @@
 "use client"
-/**
- * A single row in the current or all conditions tables
- */
 import * as React from "react"
 import Link from "next/link"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger"
@@ -49,9 +46,9 @@ export const TableItemDisplay = ({
 
   return (
     <Col className="d-flex g-1">
-      <div className="d-flex flex-fill">
+      <div className="d-flex flex-fill w-100">
         <Sentry.ErrorBoundary fallback={<b>Error displaying {firstTs.data_type.long_name}</b>} showDialog={false}>
-          <Card className="flex-fill w-100">
+          <Card className="flex-fill w-100 card-drop-shadow">
             <Card.Body className="d-flex flex-column">
               {/* Bucket name */}
               <p className="text-black-65 mb-0">{groupName}</p>
@@ -64,14 +61,23 @@ export const TableItemDisplay = ({
 
               {/* Secondary info -- gust/period */}
               <span>
-                {cardData?.secondary} {cardData?.secondaryUnit}
+                <strong>
+                  {groupName === "Wind" && cardData?.secondary && "Gust: "}
+                  {groupName === "Waves" && cardData.secondary && "Period: "}
+                  {cardData?.secondary} {cardData?.secondaryUnit}
+                </strong>
               </span>
 
               {/* Direction */}
               {cardData?.direction && (
                 <span className="d-flex flex-row align-items-center">
-                  <p className="mb-0">{cardData?.direction}</p>
-                  <LocationArrowIcon className="fa-sm ms-1" />
+                  <p className="pt-1 mb-0">
+                    <strong>
+                      {cardData?.direction}
+                      {cardData?.directionUnit}
+                    </strong>
+                  </p>
+                  <LocationArrowIcon className="fa-sm ms-1 text-info" />
                 </span>
               )}
 
@@ -82,9 +88,9 @@ export const TableItemDisplay = ({
                   ":type",
                   firstTs.data_type.standard_name,
                 )}
-                className="d-flex text-decoration-none"
+                className="d-flex text-decoration-none mt-auto ms-auto text-info"
               >
-                <LineChartIcon className="fa-sm mt-auto ms-auto" />
+                <LineChartIcon className="fa-sm" />
               </Link>
             </Card.Body>
           </Card>

@@ -9,53 +9,56 @@ type CardDispData = {
   primaryUnit: string | null
   secondaryUnit: string | null
   direction: string | number | null
+  directionUnit: string | null
 }
 
+// A collection of possible metric names for each variable
 const metric_names = {
-    waveHeight: ["WVHT", "sea_surface_wave_significant_height", "wave_ht_sig"],
-    wavePeriod: ["DPD", "AWP", "DWP", "sea_surface_wave_mean_period", "average_wave_period", "wave_period_max"],
-    waveDirection: ["MWD"],
-    windSpeed: ["WSPD"],
-    windGust: ["GST", "WGST"],
-    windDirection: ["WDIR", "WD"],
+  waveHeight: ["WVHT", "sea_surface_wave_significant_height", "wave_ht_sig"],
+  wavePeriod: ["DPD", "AWP", "DWP", "sea_surface_wave_mean_period", "average_wave_period", "wave_period_max"],
+  waveDirection: ["MWD"],
+  windSpeed: ["WSPD"],
+  windGust: ["GST", "WGST"],
+  windDirection: ["WDIR", "WD"],
 }
-// Makes the function defintions below a little more mellow
-type MetricName = keyof typeof metric_names
 
+// Grouped layer of metrics to identify when special cards will need to be made
 const group_metrics = {
   Waves: ["waveHeight", "wavePeriod", "waveDirection"],
   Wind: ["windSpeed", "windGust", "windDirection"],
 } as const
+
+// Makes the function defintions below a little more mellow
+type MetricName = keyof typeof metric_names
 type MetricList = ReadonlyArray<MetricName>
 
-
 const commonHelpers = (unitSystem?: UnitSystem) => {
-    const getValue = (ts: PlatformTimeSeries) => {
-        if (!unitSystem) return null
-        const unit_converter = converter(ts.data_type.standard_name)
-        const value = unit_converter.convertTo(ts.value as number, unitSystem)
-        return typeof value === "number" ? round(value as number, 1) : value
-    }
-    
-    const getUnit = (ts: PlatformTimeSeries) => {
-        if (!unitSystem) return null
-        const unit_converter = converter(ts.data_type.standard_name)
-        return unit_converter.displayName(unitSystem)
-    }
+  const getValue = (ts: PlatformTimeSeries) => {
+    if (!unitSystem) return null
+    const unit_converter = converter(ts.data_type.standard_name)
+    const value = unit_converter.convertTo(ts.value as number, unitSystem)
+    return typeof value === "number" ? round(value as number, 1) : value
+  }
 
-    const getVariableName = (ts: PlatformTimeSeries) => {
-        return (ts.data_type.short_name ?? ts.variable ?? ts.data_type.standard_name ?? "").toUpperCase()
-    }
+  const getUnit = (ts: PlatformTimeSeries) => {
+    if (!unitSystem) return null
+    const unit_converter = converter(ts.data_type.standard_name)
+    return unit_converter.displayName(unitSystem)
+  }
 
-    const upperCaseVariable = (value: string) => value.toUpperCase()
-    
-    return {getValue, getUnit, getVariableName, upperCaseVariable}
+  const getVariableName = (ts: PlatformTimeSeries) => {
+    return (ts.data_type.short_name ?? ts.variable ?? ts.data_type.standard_name ?? "").toUpperCase()
+  }
+
+  const upperCaseVariable = (value: string) => value.toUpperCase()
+
+  return { getValue, getUnit, getVariableName, upperCaseVariable }
 }
 
 export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs: PlatformTimeSeries[]) => {
-  const {getValue, getUnit, getVariableName, upperCaseVariable} = commonHelpers(unitSystem)
+  const { getValue, getUnit, getVariableName, upperCaseVariable } = commonHelpers(unitSystem)
 
-  // Get a set of metric names  
+  // Get a set of metric names
   const metricNameSet = (names: string[]) => new Set(names.map(upperCaseVariable))
 
   const getSpecificTs = (metric: MetricName) => {
@@ -74,6 +77,7 @@ export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs:
         primaryUnit: height ? getUnit(height) : null,
         secondaryUnit: period ? getUnit(period) : null,
         direction: direction ? getValue(direction) : null,
+        directionUnit: direction ? getUnit(direction) : null,
       }
     }
     if (groupName === "Wind") {
@@ -86,6 +90,7 @@ export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs:
         primaryUnit: speed ? getUnit(speed) : null,
         secondaryUnit: gust ? getUnit(gust) : null,
         direction: direction ? getValue(direction) : null,
+        directionUnit: direction ? getUnit(direction) : null,
       }
     }
     return null
@@ -94,10 +99,9 @@ export const getGroupData = (unitSystem: UnitSystem, groupName: string, groupTs:
   return { getWindOrWaveData }
 }
 
-
 // Return simple data which does not require grouping, such as Air Temperature.
 export const getNonGroupData = (unitSystem: UnitSystem, ts: PlatformTimeSeries) => {
-  const {getValue, getUnit} = commonHelpers(unitSystem)
+  const { getValue, getUnit } = commonHelpers(unitSystem)
 
   const getOtherData = (): CardDispData => {
     return {
@@ -106,18 +110,18 @@ export const getNonGroupData = (unitSystem: UnitSystem, ts: PlatformTimeSeries) 
       primaryUnit: getUnit(ts),
       secondaryUnit: null,
       direction: null,
+      directionUnit: null,
     }
   }
 
   return { getOtherData }
 }
 
-
 // Find desired variable groups and return an array of platform timeseries.
 export const getLatestObsGroups = (allTs: PlatformTimeSeries[]) => {
-  const {getVariableName, upperCaseVariable} = commonHelpers()
-  
-  // Take each metric in a possible group and uppercase the variables.  
+  const { getVariableName, upperCaseVariable } = commonHelpers()
+
+  // Take each metric in a possible group and uppercase the variables.
   const metricSet = (metrics: MetricList) =>
     new Set(metrics.flatMap((metric) => metric_names[metric]).map(upperCaseVariable))
 
@@ -128,7 +132,7 @@ export const getLatestObsGroups = (allTs: PlatformTimeSeries[]) => {
 
   const filterByVar = (vars: Set<string>) => {
     return allTs.filter((ts) => {
-        return vars.has(getVariableName(ts))
+      return vars.has(getVariableName(ts))
     })
   }
 
