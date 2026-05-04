@@ -30,11 +30,15 @@ export const TableItemDisplay = ({
 
   // Just take this first one for the link right now
   const firstTs = isGrouped ? timeSeries[0] : timeSeries
-  const groupName = isGrouped
+  let groupName = isGrouped
     ? firstTs.data_type.long_name.match("Wave")
       ? "Waves"
       : "Wind"
     : firstTs.data_type.long_name
+
+  if (firstTs.depth) {
+    groupName = groupName + " @ " + firstTs.depth + "m"
+  }
 
   const cardData = Array.isArray(timeSeries)
     ? getGroupData(unitSystem, groupName, timeSeries).getWindOrWaveData()

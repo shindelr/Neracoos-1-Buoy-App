@@ -2,13 +2,14 @@
  * All current conditions table component
  */
 import * as React from "react"
-import ListGroup from "react-bootstrap/ListGroup"
+import { Row } from "react-bootstrap"
 
 import { UnitSystem } from "Features/Units/types"
 
 import { UsePlatformRenderProps } from "../../../hooks/BuoyBarnComponents"
 import { TableItemDisplay } from "./item"
 import { getLatestObsGroups } from "Features/ERDDAP/hooks/latestObs"
+import { platformName } from "Features/ERDDAP/utils/platformName"
 
 interface Props extends UsePlatformRenderProps {
   unitSystem: UnitSystem
@@ -29,18 +30,24 @@ export const ErddapAllObservationsTable: React.FunctionComponent<Props> = ({ pla
   const { waveTs, windTs, otherTs } = getLatestObsGroups(datasets)
 
   return (
-    <ListGroup style={{ paddingTop: "1rem" }} className="all-observations" as="ul">
+    <>
+      <h3>All Observations</h3>
       {times.length > 0 ? (
-        <ListGroup.Item as="li">
-          <b>Last updated at: </b> {times[times.length - 1].toLocaleString()}
-        </ListGroup.Item>
-      ) : null}
+        <span className="d-flex flex-row">
+          <p className="text-black-65 pe-1">Last updated</p>
+          <b data-testid="all-last-updated-timestamp">{times[times.length - 1].toLocaleString()}</b>
+        </span>
+      ) : (
+        <div>There is no recent data from {platformName(platform)}</div>
+      )}
 
-      {waveTs.length > 0 && <TableItemDisplay timeSeries={waveTs} platform={platform} unitSystem={unitSystem} />}
-      {windTs.length > 0 && <TableItemDisplay timeSeries={windTs} platform={platform} unitSystem={unitSystem} />}
-      {otherTs.map((ts, index) => {
-        return <TableItemDisplay key={index} timeSeries={ts} platform={platform} unitSystem={unitSystem} />
-      })}
-    </ListGroup>
+      <Row xs={1} lg={4} className="align-items-stretch">
+        {waveTs.length > 0 && <TableItemDisplay timeSeries={waveTs} platform={platform} unitSystem={unitSystem} />}
+        {windTs.length > 0 && <TableItemDisplay timeSeries={windTs} platform={platform} unitSystem={unitSystem} />}
+        {otherTs.map((ts, index) => {
+          return <TableItemDisplay key={index} timeSeries={ts} platform={platform} unitSystem={unitSystem} />
+        })}
+      </Row>
+    </>
   )
 }

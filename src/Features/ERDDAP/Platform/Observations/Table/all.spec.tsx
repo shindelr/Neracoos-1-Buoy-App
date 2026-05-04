@@ -12,7 +12,7 @@ describe("<ErddapAllObservationsTable>", () => {
     render(<ErddapAllObservationsTable platform={platform} unitSystem={UnitSystem.english} />)
 
     expect(screen.getAllByRole("link").length).toBe(12)
-    expect(screen.getByRole("list")).toHaveTextContent("Last updated ")
+    expect(screen.getByText("Last updated"))
     const windTestId = screen.getByTestId("wind-test-id")
     expect(windTestId).toHaveTextContent("Gust:")
     expect(windTestId).toHaveTextContent("5.9")
