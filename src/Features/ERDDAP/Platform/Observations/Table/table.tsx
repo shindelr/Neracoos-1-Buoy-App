@@ -33,7 +33,6 @@ export const ErddapObservationTable: React.FC<Props> = ({
   const { allCurrentConditionsTimeseries } = currentConditionsTimeseries(platform, laterThan)
   const times = allCurrentConditionsTimeseries.filter((d) => d.time !== null).map((d) => new Date(d.time as string))
   times.sort((a, b) => a.valueOf() - b.valueOf())
-  console.log(allCurrentConditionsTimeseries)
   const { waveTs, windTs, otherTs } = getLatestObsGroups(allCurrentConditionsTimeseries)
 
   return (

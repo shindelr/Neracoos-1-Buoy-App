@@ -7,7 +7,8 @@ import ListGroup from "react-bootstrap/ListGroup"
 import { UnitSystem } from "Features/Units/types"
 
 import { UsePlatformRenderProps } from "../../../hooks/BuoyBarnComponents"
-import { itemStyle, TableItem } from "./item"
+import { TableItemDisplay } from "./item"
+import { getLatestObsGroups } from "Features/ERDDAP/hooks/latestObs"
 
 interface Props extends UsePlatformRenderProps {
   unitSystem: UnitSystem
@@ -25,20 +26,20 @@ export const ErddapAllObservationsTable: React.FunctionComponent<Props> = ({ pla
   datasets.sort((a, b) => (a.depth && b.depth ? a.depth - b.depth : 0))
   datasets.sort((a, b) => (a.data_type.long_name < b.data_type.long_name ? -1 : 1))
 
+  const { waveTs, windTs, otherTs } = getLatestObsGroups(datasets)
+
   return (
     <ListGroup style={{ paddingTop: "1rem" }} className="all-observations" as="ul">
       {times.length > 0 ? (
-        <ListGroup.Item style={itemStyle} as="li">
+        <ListGroup.Item as="li">
           <b>Last updated at: </b> {times[times.length - 1].toLocaleString()}
         </ListGroup.Item>
       ) : null}
 
-      {datasets.map((dataset, index) => {
-        let name = dataset.data_type.long_name
-        if (dataset.depth) {
-          name = name + " @ " + dataset.depth + "m"
-        }
-        return <TableItem key={index} platform={platform} timeSeries={dataset} unitSystem={unitSystem} />
+      {waveTs.length > 0 && <TableItemDisplay timeSeries={waveTs} platform={platform} unitSystem={unitSystem} />}
+      {windTs.length > 0 && <TableItemDisplay timeSeries={windTs} platform={platform} unitSystem={unitSystem} />}
+      {otherTs.map((ts, index) => {
+        return <TableItemDisplay key={index} timeSeries={ts} platform={platform} unitSystem={unitSystem} />
       })}
     </ListGroup>
   )

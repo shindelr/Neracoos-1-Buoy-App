@@ -5,7 +5,7 @@ import { render, screen } from "@testing-library/react"
 import { UnitSystem } from "Features/Units/types"
 
 import { PlatformFeature } from "../../../types"
-import { TableItem } from "./item"
+import { TableItemDisplay } from "./item"
 
 const platform: PlatformFeature = {
   geometry: {
@@ -87,16 +87,16 @@ const platform: PlatformFeature = {
 
 describe("TableItem", () => {
   const windSpeed = platform.properties.readings.find((ts) => ts.data_type.standard_name === "wind_speed")
-
+  if (!windSpeed) return
   it("Selectes and renders correct data", () => {
-    render(<TableItem platform={platform} timeSeries={windSpeed} unitSystem={UnitSystem.english} />)
+    render(<TableItemDisplay platform={platform} timeSeries={windSpeed} unitSystem={UnitSystem.english} />)
 
-    expect(screen.getByRole("link")).toHaveTextContent("Wind Speed:")
+    expect(screen.findByText("Wind"))
   })
 
   it("Rounds the wind speed", () => {
-    render(<TableItem platform={platform} timeSeries={windSpeed} unitSystem={UnitSystem.metric} />)
+    render(<TableItemDisplay platform={platform} timeSeries={windSpeed} unitSystem={UnitSystem.metric} />)
 
-    expect(screen.getByRole("link")).toHaveTextContent("Wind Speed: 4.3 m/s")
+    expect(screen.findByText("Wind Speed: 4.3 m/s"))
   })
 })

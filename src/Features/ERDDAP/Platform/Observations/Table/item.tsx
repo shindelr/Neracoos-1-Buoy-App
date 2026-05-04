@@ -74,7 +74,7 @@ export const TableItemDisplay = ({
 
                 {/* Secondary info -- gust/period */}
                 <span>
-                  <strong>
+                  <strong data-testid={groupName === "Wind" && "wind-test-id"}>
                     {groupName === "Wind" && cardData?.secondary && "Gust: "}
                     {groupName === "Waves" && cardData.secondary && "Period: "}
                     {cardData?.secondary} {cardData?.secondaryUnit}
